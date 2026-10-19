@@ -2812,7 +2812,9 @@ pub fn is_disable_ab() -> bool {
 
 #[inline]
 pub fn is_disable_account() -> bool {
-    is_some_hard_opton("disable-account")
+    // DABLIU DESK: sem login/conta (o servidor proprio nao e Pro), o que
+    // tambem esconde o catalogo de enderecos e a aba de grupo.
+    true
 }
 
 #[inline]
