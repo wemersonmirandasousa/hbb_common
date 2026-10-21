@@ -77,6 +77,8 @@ lazy_static::lazy_static! {
     // do VPS reparte: WebSocket vai para o hbbs, o resto para o rustdesk-api).
     pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
         ("allow-websocket", "Y"),
+        // sem impressora remota no DABLIU-DESK
+        ("enable-remote-printer", "N"),
         ("api-server", "http://163.176.37.43:21118"),
     ]));
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
