@@ -73,10 +73,11 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    // DABLIU-DESK: WebSocket ligado e login no nosso servidor de contas.
+    // DABLIU-DESK: WebSocket ligado e servidor de contas na 21118 (o nginx
+    // do VPS reparte: WebSocket vai para o hbbs, o resto para o rustdesk-api).
     pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
         ("allow-websocket", "Y"),
-        ("api-server", "http://163.176.37.43:21114"),
+        ("api-server", "http://163.176.37.43:21118"),
     ]));
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
@@ -2830,7 +2831,9 @@ pub fn is_disable_ab() -> bool {
 
 #[inline]
 pub fn is_disable_account() -> bool {
-    is_some_hard_opton("disable-account")
+    // DABLIU-DESK: sem login por enquanto. O servidor de contas (api-server)
+    // so recebe o registro dos aparelhos que instalaram o app.
+    true
 }
 
 #[inline]
