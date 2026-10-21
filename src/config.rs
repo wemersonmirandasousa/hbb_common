@@ -73,11 +73,22 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // DABLIU-DESK: WebSocket ligado e login no nosso servidor de contas.
+    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
+        ("allow-websocket", "Y"),
+        ("api-server", "http://163.176.37.43:21114"),
+    ]));
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // DABLIU-DESK: com servidor proprio o RustDesk desliga UDP/IPv6/WebRTC;
+    // aqui ja vem tudo ligado, como funcionou no iPhone.
+    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
+        ("enable-tcp-punch", "Y"),
+        ("enable-udp-punch", "Y"),
+        ("enable-ipv6-punch", "Y"),
+        ("enable-webrtc", "Y"),
+    ]));
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
@@ -2787,6 +2798,13 @@ pub fn is_outgoing_only() -> bool {
 }
 
 #[inline]
+fn dabliu_padroes(pares: &[(&str, &str)]) -> HashMap<String, String> {
+    pares
+        .iter()
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect()
+}
+
 fn is_some_hard_opton(name: &str) -> bool {
     HARD_SETTINGS
         .read()
@@ -2812,9 +2830,7 @@ pub fn is_disable_ab() -> bool {
 
 #[inline]
 pub fn is_disable_account() -> bool {
-    // DABLIU DESK: sem login/conta (o servidor proprio nao e Pro), o que
-    // tambem esconde o catalogo de enderecos e a aba de grupo.
-    true
+    is_some_hard_opton("disable-account")
 }
 
 #[inline]
