@@ -73,10 +73,11 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    // DABLIU-DESK: WebSocket ligado e servidor de contas na 21118 (o nginx
-    // do VPS reparte: WebSocket vai para o hbbs, o resto para o rustdesk-api).
+    // DABLIU-DESK: servidor de contas na 21118 (o nginx do VPS reparte:
+    // WebSocket vai para o hbbs, o resto para o rustdesk-api). WebSocket fica
+    // DESLIGADO: o hbbs gratuito responde NOT_SUPPORT ao RegisterPk por
+    // WebSocket e o aparelho nunca se registra ("Conectando a rede...").
     pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
-        ("allow-websocket", "Y"),
         // sem impressora remota no DABLIU-DESK
         ("enable-remote-printer", "N"),
         ("api-server", "http://163.176.37.43:21118"),
