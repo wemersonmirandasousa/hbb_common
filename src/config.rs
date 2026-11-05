@@ -81,6 +81,9 @@ lazy_static::lazy_static! {
         // sem impressora remota no DABLIU-DESK
         ("enable-remote-printer", "N"),
         ("api-server", "http://163.176.37.43:21118"),
+        // Suporte Rapido: com a senha fixa embutida, conecta direto (sem o
+        // cliente clicar "aceitar"). A janela de conexao segue aparecendo.
+        ("approve-mode", "password"),
     ]));
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
@@ -95,7 +98,11 @@ lazy_static::lazy_static! {
     ]));
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // Suporte Rapido discreto: sem icone na bandeja quando ocioso. O indicador
+    // de sessao (janela de conexao) continua aparecendo durante o acesso.
+    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(dabliu_padroes(&[
+        ("hide-tray", "Y"),
+    ]));
 }
 
 #[cfg(target_os = "android")]
